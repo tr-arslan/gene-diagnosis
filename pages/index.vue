@@ -36,6 +36,7 @@
               {{methods[0]}}
               <template v-slot:actions>
                 <v-icon v-if="!file1" color="primary">$vuetify.icons.expand</v-icon>
+                <v-icon v-else-if="error1" color="error">mdi-alert-circle</v-icon>
                 <v-icon v-else color="teal">mdi-check</v-icon>
               </template>
             </v-expansion-panel-header>
@@ -67,6 +68,7 @@
               {{methods[1]}}
               <template v-slot:actions>
                 <v-icon v-if="!file2" color="primary">$vuetify.icons.expand</v-icon>
+                <v-icon v-else-if="error2" color="error">mdi-alert-circle</v-icon>
                 <v-icon v-else color="teal">mdi-check</v-icon>
               </template>
             </v-expansion-panel-header>
@@ -78,6 +80,7 @@
                 placeholder="Select your file"
                 prepend-icon="mdi-clippy"
                 outlined
+                @change="input('file2')"
                 :show-size="1000"
               >
                 <template v-slot:selection="{ index, text }">
@@ -97,8 +100,8 @@
               {{methods[2]}}
               <template v-slot:actions>
                 <v-icon v-if="!file3" color="primary">$vuetify.icons.expand</v-icon>
+                <v-icon v-else-if="error3" color="error">mdi-alert-circle</v-icon>
                 <v-icon v-else color="teal">mdi-check</v-icon>
-                <!-- <v-icon color="error">mdi-alert-circle</v-icon> -->
               </template>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -108,6 +111,7 @@
                 counter
                 placeholder="Select your file"
                 prepend-icon="mdi-clippy"
+                @change="input('file3')"
                 outlined
                 :show-size="1000"
               >
@@ -217,7 +221,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <div class="flex-grow-1"></div>
-                  <v-btn color="green darken-1" text @click="dialog = false">Verified</v-btn>
+                  <v-btn color="green darken-1" text @click="dialog = false">Finish and Close</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -255,6 +259,9 @@ export default {
     gene1: "",
     gene2: "",
     gene3: "",
+    error1: false,
+    error2: false,
+    error3: false,
     dialog: false,
     data: {},
     overlay: false
@@ -305,7 +312,7 @@ export default {
         bool3 = true;
       }
 
-      return bool1 && bool2 && bool3 && this.name.length > 0;
+      return bool1 && bool2 && bool3 && this.name.length > 0 && !this.error1 && !this.error2 && !this.error3 ;
     }
   },
 
@@ -328,8 +335,30 @@ export default {
         file.shift();
         file = file.join("");
         let data = "gene" + model[model.length - 1];
+        file = file.replace(/\s+/g, "");
         this[data] = file;
-        console.log(this[data]);
+        console.log(this.methods[model[model.length - 1] - 1]);
+        this.$axios
+          .post(
+            "/api/v1/diagnosis/method-validataion",
+            {
+              method: this.methods[model[model.length - 1] - 1],
+              geneSequence: this[data]
+            },
+            {
+              headers: { "Content-Type": "application/json" }
+            }
+          )
+          .then(res => {
+            let err = "error" + model[model.length - 1];
+            if (!res.data) {
+              this[err] = true;
+            } else {
+              this[err] = false;
+            }
+          })
+          .catch(error => {});
+        console.log(data, this[data]);
       };
 
       if (this[model]) reader.readAsText(this[model]);
@@ -337,32 +366,87 @@ export default {
     genotyping() {
       this.overlay = true;
       // API request
-      this.gene1 =
-        "ATGTGGCTCCGGAGCCATCGTCAGCTCTGCCTGGCCTTCCTGCTAGTCTGTGTCCTCTCTGTAATCTTCTTCCTCCATATCCATCAAGACAGCTTTCCACATGGCCTAGGCCTGTCGATCCTGTGTCCAGACCGCCGCCTGGTGACACCCCCAGTGGCCATCTTCTGCCTGCCGGGTACTGCGATGGGCCCCAACGCCTCCTCTTCCTGTCCCCAGCACCCTGCTTCCCTCTCCGGCACCTGGACTGTCTACCCCAATGGCCGGTTTGGTAATCAGATGGGACAGTATGCCATGCTGCTGGCTCTGGCCCAGCTCAACGGCCGCCGGGCCTTTATCCTGCCTGCCATGCATGCCGCCCTGGCCCCGGTATTCCGCATCACCCTGCCCGTGCTGGCCCCAGAAGTGGACAGCCGCACGCCGTGGCGGGAGCTGCAGCTTCACGACTGGATGTCGGAGGAGTACGCGGACTTGAGAGATCCTTTCCTGAAGCTCTCTGGCTTCCCCTGCTCTTGGACTTTCTTCCACCATCTCCGGGAACAGATCCGCAGAGAGTTCACCCTGCACGACCACCTTCGGGAAGAGGCGCAGAGTGTGCTGGGTCAGCTCCGCCTGGGCCGCACAGGGGACCGCCCGCGCACCTTTGTCGGCGTCCACGTGCGCCGTGGGGACTATCTGCAGGTTATGCCTCAGCGCTGGAAGGGTGTGGTGGGCGACAGCGCCTACCTCCGGCAGGCCATGGACTGGTTCCGGGCACGGCACGAAGCCCCCGTTTTCGTGGTCACCAGCAACGGCATGGAGTGGTGTAAAGAAAACATCGACACCTCCCAGGGCGATGTGACGTTTGCTGGCGATGGACAGGAGGCTACACCGTGGAAAGACTTTGCCCTGCTCACACAGTGCAACCACACCATTATGACCATTGGCACCTTCGGCTTCTGGGCTGCCTACCTGGCTGGCGGAGACACTGTCTACCTGGCCAACTTCACCCTGCCAGACTCTGAGTTCCTGAAGATCTTTAAGCCGGAGGCGGCCTTCCTGCCCGAGTGGGTGGGCATTAATGCAGACTTGTCTCCACTCTGGACATTGGCTAAGCCTTGA";
+      // this.gene1 =
+      //   "ATGTGGCTCCGGAGCCATCGTCAGCTCTGCCTGGCCTTCCTGCTAGTCTGTGTCCTCTCTGTAATCTTCTTCCTCCATATCCATCAAGACAGCTTTCCACATGGCCTAGGCCTGTCGATCCTGTGTCCAGACCGCCGCCTGGTGACACCCCCAGTGGCCATCTTCTGCCTGCCGGGTACTGCGATGGGCCCCAACGCCTCCTCTTCCTGTCCCCAGCACCCTGCTTCCCTCTCCGGCACCTGGACTGTCTACCCCAATGGCCGGTTTGGTAATCAGATGGGACAGTATGCCATGCTGCTGGCTCTGGCCCAGCTCAACGGCCGCCGGGCCTTTATCCTGCCTGCCATGCATGCCGCCCTGGCCCCGGTATTCCGCATCACCCTGCCCGTGCTGGCCCCAGAAGTGGACAGCCGCACGCCGTGGCGGGAGCTGCAGCTTCACGACTGGATGTCGGAGGAGTACGCGGACTTGAGAGATCCTTTCCTGAAGCTCTCTGGCTTCCCCTGCTCTTGGACTTTCTTCCACCATCTCCGGGAACAGATCCGCAGAGAGTTCACCCTGCACGACCACCTTCGGGAAGAGGCGCAGAGTGTGCTGGGTCAGCTCCGCCTGGGCCGCACAGGGGACCGCCCGCGCACCTTTGTCGGCGTCCACGTGCGCCGTGGGGACTATCTGCAGGTTATGCCTCAGCGCTGGAAGGGTGTGGTGGGCGACAGCGCCTACCTCCGGCAGGCCATGGACTGGTTCCGGGCACGGCACGAAGCCCCCGTTTTCGTGGTCACCAGCAACGGCATGGAGTGGTGTAAAGAAAACATCGACACCTCCCAGGGCGATGTGACGTTTGCTGGCGATGGACAGGAGGCTACACCGTGGAAAGACTTTGCCCTGCTCACACAGTGCAACCACACCATTATGACCATTGGCACCTTCGGCTTCTGGGCTGCCTACCTGGCTGGCGGAGACACTGTCTACCTGGCCAACTTCACCCTGCCAGACTCTGAGTTCCTGAAGATCTTTAAGCCGGAGGCGGCCTTCCTGCCCGAGTGGGTGGGCATTAATGCAGACTTGTCTCCACTCTGGACATTGGCTAAGCCTTGA";
       this.$axios.defaults.baseURL = "https://mt-cmu-2019.appspot.com";
-      this.$axios
-        .post(
-          "/api/v1/diagnosis/calculate",
-          {
-            method: "FUT1",
-            geneSequence: this.gene1,
-            patientID: this.name,
-            noSave: false
-          },
-          {
-            headers: { "Content-Type": "application/json" }
-          }
-        )
-        .then(res => {
-          console.log(res);
-          this.data = res.data;
-          this.overlay = false;
-          this.dialog = true;
-        })
-        .catch(error => {
-          console.log(error);
-          this.dialog = true;
-        });
+      if (this.gene1) {
+        this.$axios
+          .post(
+            "/api/v1/diagnosis/calculate",
+            {
+              method: "FUT1",
+              geneSequence: this.gene1,
+              patientID: this.name,
+              noSave: false
+            },
+            {
+              headers: { "Content-Type": "application/json" }
+            }
+          )
+          .then(res => {
+            console.log(res);
+            this.data = res.data;
+            this.overlay = false;
+            this.dialog = true;
+          })
+          .catch(error => {
+            console.log(error);
+            this.overlay = false;
+            this.dialog = true;
+          });
+      }
+      if (this.gene2) {
+        this.$axios
+          .post(
+            "/api/v1/diagnosis/calculate",
+            {
+              method: "FUT2",
+              geneSequence: this.gene2,
+              patientID: this.name,
+              noSave: false
+            },
+            {
+              headers: { "Content-Type": "application/json" }
+            }
+          )
+          .then(res => {
+            console.log(res);
+            this.data = res.data;
+            this.overlay = false;
+            this.dialog = true;
+          })
+          .catch(error => {
+            console.log(error);
+            this.overlay = false;
+            this.dialog = true;
+          });
+      }
+      if (this.gene3) {
+        this.$axios
+          .post(
+            "/api/v1/diagnosis/calculate",
+            {
+              method: "ABO",
+              geneSequence: this.gene3,
+              patientID: this.name,
+              noSave: false
+            },
+            {
+              headers: { "Content-Type": "application/json" }
+            }
+          )
+          .then(res => {
+            console.log(res);
+            this.data = res.data;
+            this.overlay = false;
+            this.dialog = true;
+          })
+          .catch(error => {
+            console.log(error);
+            this.overlay = false;
+            this.dialog = true;
+          });
+      }
     }
   }
 };
