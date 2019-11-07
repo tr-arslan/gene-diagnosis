@@ -370,7 +370,9 @@ export default {
               this[err] = false;
             }
           })
-          .catch(error => {});
+          .catch(error => {
+            this[err] = true;
+          });
         console.log(data, this[data]);
       };
 
@@ -390,7 +392,8 @@ export default {
               method: "FUT1",
               geneSequence: this.gene1,
               patientID: this.name,
-              noSave: false
+              noSave: false,
+              type: "file"
             },
             {
               headers: { "Content-Type": "application/json" }
@@ -416,7 +419,8 @@ export default {
               method: "FUT2",
               geneSequence: this.gene2,
               patientID: this.name,
-              noSave: false
+              noSave: false,
+              type: "file"
             },
             {
               headers: { "Content-Type": "application/json" }
@@ -442,7 +446,8 @@ export default {
               method: "ABO",
               geneSequence: this.gene3,
               patientID: this.name,
-              noSave: false
+              noSave: false,
+              type: "file"
             },
             {
               headers: { "Content-Type": "application/json" }

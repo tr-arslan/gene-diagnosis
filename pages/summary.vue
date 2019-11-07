@@ -12,23 +12,24 @@
       ></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="data" :search="search">
-      <template v-slot:item.change="{ item }">
-        {{item.mutationResult[0]?item.mutationResult[0].type+item.mutationResult[0].position+item.mutationResult[0].changeFrom +'>' + item.mutationResult[0].changeTo:'-' }}
-      </template>
+      <template
+        v-slot:item.change="{ item }"
+      >{{item.mutationResult[0]?item.mutationResult[0].type+item.mutationResult[0].position+item.mutationResult[0].changeFrom +'>' + item.mutationResult[0].changeTo:'-' }}</template>
 
-       <template v-slot:item.allelename="{ item }">
-        {{item.mutationRefMatch? item.mutationRefMatch.alleleName: "-"}}
-      </template>
-      
-      <template v-slot:item.phenotype="{ item }">
-        {{item.mutationRefMatch? item.mutationRefMatch.phenotype: "-"}}
-      </template>
-   
+      <template
+        v-slot:item.allelename="{ item }"
+      >{{item.mutationRefMatch? item.mutationRefMatch.alleleName: "-"}}</template>
 
-     
-      
+      <template
+        v-slot:item.phenotype="{ item }"
+      >{{item.mutationRefMatch? item.mutationRefMatch.phenotype: "-"}}</template>
+
       <template v-slot:item.download="{ item }">
-        <v-icon small class="mr-2" @click="download(item.patientID, item.method)">mdi-download</v-icon>
+        <v-icon
+          small
+          class="mr-2"
+          @click="download(item.patientID, item.method, item._id)"
+        >mdi-download</v-icon>
       </template>
     </v-data-table>
   </v-card>
@@ -77,11 +78,39 @@ export default {
           console.log(error);
         });
     },
-    download(id, gene) {
-      alert(`Download: PatientID ${id}, ${gene} sequence\nComing Soon.`)
+    download(pid, gene, test_id) {
+      // alert(`Download: PatientID ${pid}, ${gene}, ${test_id} sequence\nComing Soon.`)
+      this.$axios.defaults.baseURL = "https://mt-cmu-2019.appspot.com";
+      this.$axios
+        .get(`/api/v1/diagnosis/download?diagnosisLogID=${test_id}`)
+        .then(res => {
+          console.log(res);
+          var saveData = (function() {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            return function(data, fileName) {
+              var json = JSON.stringify(data),
+                blob = new Blob([json], { type: "octet/stream" }),
+                url = window.URL.createObjectURL(blob);
+              a.href = url;
+              a.download = fileName;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            };
+          })();
+
+          var data = res.data;
+          fileName = pid + "_" + test_id + ".fas";
+
+          saveData(data, fileName);
+        })
+        .catch(error => {
+          console.log("The file is broken, please contact staff");
+        });
     },
     add1(string) {
-      return string + 1
+      return string + 1;
     }
   },
   mounted() {
