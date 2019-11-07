@@ -278,6 +278,7 @@ export default {
       return errors;
     },
     completeDetail() {
+      console.log("validating...");
       let bool1 = false,
         bool2 = false,
         bool3 = false;
@@ -290,6 +291,7 @@ export default {
         }
       } else {
         bool1 = true;
+        this.error1 = false;
       }
 
       if (this.selectedMethods.includes(this.methods[1])) {
@@ -300,6 +302,7 @@ export default {
         }
       } else {
         bool2 = true;
+        this.error2 = false;
       }
 
       if (this.selectedMethods.includes(this.methods[2])) {
@@ -310,9 +313,18 @@ export default {
         }
       } else {
         bool3 = true;
+        this.error3 = false;
       }
 
-      return bool1 && bool2 && bool3 && this.name.length > 0 && !this.error1 && !this.error2 && !this.error3 ;
+      return (
+        bool1 &&
+        bool2 &&
+        bool3 &&
+        this.name.length > 0 &&
+        !this.error1 &&
+        !this.error2 &&
+        !this.error3
+      );
     }
   },
 
@@ -324,9 +336,9 @@ export default {
       this.$v.$reset();
       this.name = "";
       this.selectedMethods = [];
-      this.file1 = null;
-      this.file2 = null;
-      this.file3 = null;
+      this.file1 = undefined;
+      this.file2 = undefined;
+      this.file3 = undefined;
     },
     input(model) {
       const reader = new FileReader();
@@ -338,6 +350,7 @@ export default {
         file = file.replace(/\s+/g, "");
         this[data] = file;
         console.log(this.methods[model[model.length - 1] - 1]);
+        this.$axios.defaults.baseURL = "https://mt-cmu-2019.appspot.com";
         this.$axios
           .post(
             "/api/v1/diagnosis/method-validataion",
@@ -449,5 +462,10 @@ export default {
       }
     }
   }
+  // watch: {
+  //   selectedMethods() {
+  //     console.log(this.selectedMethods);
+  //   }
+  // }
 };
 </script>
