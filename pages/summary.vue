@@ -12,24 +12,35 @@
       ></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="data" :search="search">
-      <template
-        v-slot:item.change="{ item }"
-      >{{item.mutationResult[0]?item.mutationResult[0].type+item.mutationResult[0].position+item.mutationResult[0].changeFrom +'>' + item.mutationResult[0].changeTo:'-' }}</template>
+      <template v-slot:item.change="{ item }">{{
+        item.mutationResult[0]
+          ? item.mutationResult[0].type +
+            item.mutationResult[0].position +
+            item.mutationResult[0].changeFrom +
+            ">" +
+            item.mutationResult[0].changeTo
+          : "-"
+      }}</template>
+      <template v-slot:item.fileName="{ item }">{{
+        new Date(+(item.fileName.split('_')[2].split('.')[0])).toLocaleString()
+      }}</template>
+      <template v-slot:item.allelename="{ item }">{{
+        item.mutationRefMatch ? item.mutationRefMatch.alleleName : "-"
+      }}</template>
 
-      <template
-        v-slot:item.allelename="{ item }"
-      >{{item.mutationRefMatch? item.mutationRefMatch.alleleName: "-"}}</template>
-
-      <template
-        v-slot:item.phenotype="{ item }"
-      >{{item.mutationRefMatch? item.mutationRefMatch.phenotype: "-"}}</template>
+      <template v-slot:item.phenotype="{ item }">{{
+        item.mutationRefMatch ? item.mutationRefMatch.phenotype : "-"
+      }}</template>
 
       <template v-slot:item.download="{ item }">
         <v-icon
           small
           class="mr-2"
-          @click="download(item.patientID, item.method, item._id)"
-        >mdi-download</v-icon>
+          @click="
+            download(item.patientID, item.method, item._id, item.fileName)
+          "
+          >mdi-download</v-icon
+        >
       </template>
     </v-data-table>
   </v-card>
@@ -46,6 +57,10 @@ export default {
           align: "left",
           sortable: false,
           value: "patientID"
+        },
+        {
+          text: "IssueDate",
+          value: "fileName"
         },
         { text: "Method", value: "method" },
         { text: "AlleleName", value: "allelename" },
@@ -73,12 +88,13 @@ export default {
         .then(res => {
           console.log(res);
           this.data = res.data;
+          this.data.reverse();
         })
         .catch(error => {
           console.log(error);
         });
     },
-    download(pid, gene, test_id) {
+    download(pid, gene, test_id, name) {
       // alert(`Download: PatientID ${pid}, ${gene}, ${test_id} sequence\nComing Soon.`)
       this.$axios.defaults.baseURL = "https://mt-cmu-2019.appspot.com";
       this.$axios
@@ -89,10 +105,13 @@ export default {
             var a = document.createElement("a");
             document.body.appendChild(a);
             a.style = "display: none";
+            console.log("disp");
             return function(data, fileName) {
               var json = JSON.stringify(data),
                 blob = new Blob([json], { type: "octet/stream" }),
                 url = window.URL.createObjectURL(blob);
+              console.log(blob);
+
               a.href = url;
               a.download = fileName;
               a.click();
@@ -101,9 +120,8 @@ export default {
           })();
 
           var data = res.data;
-          fileName = pid + "_" + test_id + ".fas";
 
-          saveData(data, fileName);
+          saveData(data, name);
         })
         .catch(error => {
           console.log("The file is broken, please contact staff");

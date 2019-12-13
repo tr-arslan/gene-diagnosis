@@ -7,7 +7,7 @@
       <v-card class="pa-2 pb-1 mt-5">
         <form>
           <v-text-field
-            class="px-4"
+            class="px-3 pt-4"
             v-model="name"
             :error-messages="nameErrors"
             :counter="8"
@@ -15,6 +15,8 @@
             required
             @input="$v.name.$touch()"
             @blur="$v.name.$touch()"
+            outlined
+            dense
           ></v-text-field>
         </form>
         <v-col cols="12" sm="6" md="12">
@@ -25,6 +27,7 @@
             label="Methods"
             multiple
             outlined
+            dense
           ></v-select>
         </v-col>
 
@@ -221,7 +224,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <div class="flex-grow-1"></div>
-                  <v-btn color="green darken-1" text @click="dialog = false">Close</v-btn>
+                  <v-btn color="green darken-1" text @click="dialog = false; clear()">Close</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>

@@ -12,12 +12,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
-<<<<<<< HEAD
-    "nuxt": "^2.9.2",
-=======
-    "@nuxtjs/vuetify": "^1.5.0",
     "nuxt": "^2.10.2",
->>>>>>> master
     "vuelidate": "^0.7.4"
   },
   "devDependencies": {
