@@ -25,7 +25,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar
-    class="purple white--text"
+    class="primary white--text"
       :clipped-left="clipped"
       fixed
       app
