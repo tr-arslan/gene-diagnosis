@@ -39,7 +39,12 @@
               {{methods[0]}}
               <template v-slot:actions>
                 <v-icon v-if="!file1" color="primary">$vuetify.icons.expand</v-icon>
-                <v-icon v-else-if="error1" color="error">mdi-alert-circle</v-icon>
+                <v-tooltip v-else-if="error1" right>
+                  <template v-slot:activator="{ on }">
+                    <v-icon  color="error" v-on="on">mdi-alert-circle</v-icon>
+                  </template>
+                  <span>This file is not {{methods[0]}}</span>
+                </v-tooltip>
                 <v-icon v-else color="teal">mdi-check</v-icon>
               </template>
             </v-expansion-panel-header>
@@ -71,7 +76,12 @@
               {{methods[1]}}
               <template v-slot:actions>
                 <v-icon v-if="!file2" color="primary">$vuetify.icons.expand</v-icon>
-                <v-icon v-else-if="error2" color="error">mdi-alert-circle</v-icon>
+                <v-tooltip v-else-if="error2" right>
+                  <template v-slot:activator="{ on }">
+                    <v-icon  color="error" v-on="on">mdi-alert-circle</v-icon>
+                  </template>
+                  <span>This file is not {{methods[1]}}</span>
+                </v-tooltip>
                 <v-icon v-else color="teal">mdi-check</v-icon>
               </template>
             </v-expansion-panel-header>
@@ -103,7 +113,13 @@
               {{methods[2]}}
               <template v-slot:actions>
                 <v-icon v-if="!file3" color="primary">$vuetify.icons.expand</v-icon>
-                <v-icon v-else-if="error3" color="error">mdi-alert-circle</v-icon>
+                <v-tooltip v-else-if="error3" right>
+                  <template v-slot:activator="{ on }">
+                    <v-icon  color="error" v-on="on">mdi-alert-circle</v-icon>
+                  </template>
+                  <span>This file is not {{methods[2]}}</span>
+                </v-tooltip>
+                
                 <v-icon v-else color="teal">mdi-check</v-icon>
               </template>
             </v-expansion-panel-header>
