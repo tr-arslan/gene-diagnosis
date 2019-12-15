@@ -23,7 +23,8 @@ export default {
         error2: false,
         error3: false,
         dialog: false,
-        data: [],
+        fut1: [],
+        fut2: [],
         overlay: false
     }),
 
@@ -166,7 +167,7 @@ export default {
                     )
                     .then(res => {
                         console.log(res);
-                        this.data.push(res.data);
+                        this.fut1 = res.data
 
                         if (this.gene2) {
                             this.$axios
@@ -187,7 +188,7 @@ export default {
                                 )
                                 .then(res => {
                                     console.log(res);
-                                    this.data.push(res.data);
+                                    this.fut2 = res.data
                                     this.overlay = false;
                                     this.dialog = true;
                                 })
@@ -198,7 +199,7 @@ export default {
                                 });
                         }
                         else {
-                            this.data = res.data;
+                            this.fut1 = res.data;
                             this.overlay = false;
                             this.dialog = true;
                         }

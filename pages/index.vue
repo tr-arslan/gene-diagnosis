@@ -155,23 +155,23 @@
                 <v-card-text v-if="selectedMethods.includes(methods[0])">
                   <p>
                     <span class="font-weight-bold">Method:</span>
-                    {{data.method}}
+                    {{methods[0]}}
                   </p>
                   <p>
                     <span class="font-weight-bold">Start position:</span>
-                    {{data.lcsStartAt}}
+                    {{fut1.lcsStartAt}}
                   </p>
                   <p>
                     <span class="font-weight-bold">End position:</span>
-                    {{data.lcsEndAt}}
+                    {{fut1.lcsEndAt}}
                   </p>
-                  <p v-if="data.mutationResult">
+                  <p v-if="fut1.mutationResult">
                     <span class="font-weight-bold">MutationResult:</span>
-                    {{data.mutationResult[0].type+data.mutationResult[0].position+data.mutationResult[0].changeFrom+'>'+data.mutationResult[0].changeTo}}
+                    {{fut1.mutationResult[0].type+fut1.mutationResult[0].position+fut1.mutationResult[0].changeFrom+'>'+fut1.mutationResult[0].changeTo}}
                   </p>
-                  <p v-if="data.mutationRefMatch">
+                  <p v-if="fut1.mutationRefMatch">
                     <span class="font-weight-bold">MutationMatch:</span>
-                    AlleleName {{data.mutationRefMatch.alleleName}}
+                    AlleleName {{fut1.mutationRefMatch.alleleName}}
                   </p>
                   <v-divider />
                 </v-card-text>
@@ -183,19 +183,19 @@
                   </p>
                   <p>
                     <span class="font-weight-bold">Start position:</span>
-                    {{data.lcsStartAt}}
+                    {{fut2.lcsStartAt}}
                   </p>
                   <p>
                     <span class="font-weight-bold">End position:</span>
-                    {{data.lcsEndAt}}
+                    {{fut2.lcsEndAt}}
                   </p>
-                  <p v-if="data.mutationResult">
+                  <p v-if="fut2.mutationResult">
                     <span class="font-weight-bold">MutationResult:</span>
-                    {{data.mutationResult[0].type+data.mutationResult[0].position+data.mutationResult[0].changeFrom+'>'+data.mutationResult[0].changeTo}}
+                    {{fut2.mutationResult[0].type+fut2.mutationResult[0].position+fut2.mutationResult[0].changeFrom+'>'+fut2.mutationResult[0].changeTo}}
                   </p>
-                  <p v-if="data.mutationRefMatch">
+                  <p v-if="fut2.mutationRefMatch">
                     <span class="font-weight-bold">MutationMatch:</span>
-                    AlleleName {{data.mutationRefMatch.alleleName}}
+                    AlleleName {{fut2.mutationRefMatch.alleleName}}
                   </p>
                   <v-divider />
                 </v-card-text>
