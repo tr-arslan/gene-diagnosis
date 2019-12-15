@@ -22,7 +22,11 @@
           : "-"
       }}</template>
       <template v-slot:item.fileName="{ item }">{{
-        item.fileName.includes('_')?new Date(+(item.fileName.split('_')[2].split('.')[0])).toLocaleString():'nodata'
+        item.fileName.includes("_")
+          ? new Date(
+              +item.fileName.split("_")[2].split(".")[0]
+            ).toLocaleString()
+          : "nodata"
       }}</template>
       <template v-slot:item.allelename="{ item }">{{
         item.mutationRefMatch ? item.mutationRefMatch.alleleName : "-"
@@ -107,7 +111,9 @@ export default {
             a.style = "display: none";
             console.log("disp");
             return function(data, fileName) {
-              var json = JSON.stringify(data),
+              var json = JSON.stringify(data)
+                  .replace(/(?:\\[rn]|[\r\n]+)+/g, "\n")
+                  .replace(/"/g, ""),
                 blob = new Blob([json], { type: "octet/stream" }),
                 url = window.URL.createObjectURL(blob);
               console.log(blob);

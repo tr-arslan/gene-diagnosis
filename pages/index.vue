@@ -119,7 +119,6 @@
                   </template>
                   <span>This file is not {{methods[2]}}</span>
                 </v-tooltip>
-                
                 <v-icon v-else color="teal">mdi-check</v-icon>
               </template>
             </v-expansion-panel-header>
@@ -199,19 +198,19 @@
                   </p>
                   <p>
                     <span class="font-weight-bold">Start position:</span>
-                    {{fut2.lcsStartAt}}
+                    {{data[1].lcsStartAt}}
                   </p>
                   <p>
                     <span class="font-weight-bold">End position:</span>
-                    {{fut2.lcsEndAt}}
+                    {{data[1].lcsEndAt}}
                   </p>
-                  <p v-if="fut2.mutationResult">
+                  <p v-if="data[1].mutationResult">
                     <span class="font-weight-bold">MutationResult:</span>
-                    {{fut2.mutationResult[0].type+fut2.mutationResult[0].position+fut2.mutationResult[0].changeFrom+'>'+fut2.mutationResult[0].changeTo}}
+                    {{data[1].mutationResult[0].type+data[1].mutationResult[0].position+data[1].mutationResult[0].changeFrom+'>'+data[1].mutationResult[0].changeTo}}
                   </p>
-                  <p v-if="fut2.mutationRefMatch">
+                  <p v-if="data[1].mutationRefMatch">
                     <span class="font-weight-bold">MutationMatch:</span>
-                    AlleleName {{fut2.mutationRefMatch.alleleName}}
+                    AlleleName {{data[1].mutationRefMatch.alleleName}}
                   </p>
                   <v-divider />
                 </v-card-text>
