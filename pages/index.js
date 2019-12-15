@@ -23,7 +23,7 @@ export default {
         error2: false,
         error3: false,
         dialog: false,
-        data: {},
+        data: [],
         overlay: false
     }),
 
@@ -166,65 +166,42 @@ export default {
                     )
                     .then(res => {
                         console.log(res);
-                        this.data = res.data;
-                        this.overlay = false;
-                        this.dialog = true;
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        this.overlay = false;
-                        this.dialog = true;
-                    });
-            }
-            if (this.gene2) {
-                this.$axios
-                    .post(
-                        "/api/v1/diagnosis/calculate",
-                        {
-                            method: "FUT2",
-                            geneSequence: this.gene2,
-                            patientID: this.name,
-                            noSave: false,
-                            type: "file",
-                            fileName:
-                                "FUT2" + "_" + this.name + "_" + new Date().getTime() + ".fas"
-                        },
-                        {
-                            headers: { "Content-Type": "application/json" }
+                        this.data.push(res.data);
+
+                        if (this.gene2) {
+                            this.$axios
+                                .post(
+                                    "/api/v1/diagnosis/calculate",
+                                    {
+                                        method: "FUT2",
+                                        geneSequence: this.gene2,
+                                        patientID: this.name,
+                                        noSave: false,
+                                        type: "file",
+                                        fileName:
+                                            "FUT2" + "_" + this.name + "_" + new Date().getTime() + ".fas"
+                                    },
+                                    {
+                                        headers: { "Content-Type": "application/json" }
+                                    }
+                                )
+                                .then(res => {
+                                    console.log(res);
+                                    this.data.push(res.data);
+                                    this.overlay = false;
+                                    this.dialog = true;
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                    this.overlay = false;
+                                    this.dialog = true;
+                                });
                         }
-                    )
-                    .then(res => {
-                        console.log(res);
-                        this.data = res.data;
-                        this.overlay = false;
-                        this.dialog = true;
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        this.overlay = false;
-                        this.dialog = true;
-                    });
-            }
-            if (this.gene3) {
-                this.$axios
-                    .post(
-                        "/api/v1/diagnosis/calculate",
-                        {
-                            method: "ABO",
-                            geneSequence: this.gene3,
-                            patientID: this.name,
-                            noSave: false,
-                            type: "file"
-                        },
-                        {
-                            headers: { "Content-Type": "application/json" }
+                        else {
+                            this.data = res.data;
+                            this.overlay = false;
+                            this.dialog = true;
                         }
-                    )
-                    .then(res => {
-                        console.log(res);
-                        this.data = res.data;
-                        this.overlay = false;
-                        this.dialog = true;
                     })
                     .catch(error => {
                         console.log(error);
@@ -232,6 +209,35 @@ export default {
                         this.dialog = true;
                     });
             }
+
+            // ABO
+            // if (this.gene3) {  
+            //     this.$axios
+            //         .post(
+            //             "/api/v1/diagnosis/calculate",
+            //             {
+            //                 method: "ABO",
+            //                 geneSequence: this.gene3,
+            //                 patientID: this.name,
+            //                 noSave: false,
+            //                 type: "file"
+            //             },
+            //             {
+            //                 headers: { "Content-Type": "application/json" }
+            //             }
+            //         )
+            //         .then(res => {
+            //             console.log(res);
+            //             this.data = res.data;
+            //             this.overlay = false;
+            //             this.dialog = true;
+            //         })
+            //         .catch(error => {
+            //             console.log(error);
+            //             this.overlay = false;
+            //             this.dialog = true;
+            //         });
+            // }
         }
     }
     // watch: {

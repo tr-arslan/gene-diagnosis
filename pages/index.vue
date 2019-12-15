@@ -152,7 +152,7 @@
                   >on {{new Date().toLocaleString()}}</small>
                 </v-card-title>
                 <!-- FUT1 -->
-                <v-card-text>
+                <v-card-text v-if="selectedMethods.includes(methods[0])">
                   <p>
                     <span class="font-weight-bold">Method:</span>
                     {{data.method}}
@@ -200,7 +200,7 @@
                   <v-divider />
                 </v-card-text>
                 <!-- ABO -->
-                <v-card-text v-if="selectedMethods.includes(methods[2])">
+                <!-- <v-card-text v-if="selectedMethods.includes(methods[2])">
                   <p>
                     <span class="font-weight-bold">Method:</span>
                     {{methods[2]}}
@@ -221,7 +221,7 @@
                     <span class="font-weight-bold">MutationMatch:</span>
                     AlleleName {{data.mutationRefMatch.alleleName}}
                   </p>
-                </v-card-text>
+                </v-card-text> -->
                 <v-card-actions>
                   <div class="flex-grow-1"></div>
                   <v-btn color="green darken-1" text @click="dialog = false; clear()">Close</v-btn>

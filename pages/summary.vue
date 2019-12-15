@@ -22,7 +22,7 @@
           : "-"
       }}</template>
       <template v-slot:item.fileName="{ item }">{{
-        new Date(+(item.fileName.split('_')[2].split('.')[0])).toLocaleString()
+        item.fileName.includes('_')?new Date(+(item.fileName.split('_')[2].split('.')[0])).toLocaleString():'nodata'
       }}</template>
       <template v-slot:item.allelename="{ item }">{{
         item.mutationRefMatch ? item.mutationRefMatch.alleleName : "-"
