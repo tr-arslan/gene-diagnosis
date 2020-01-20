@@ -182,7 +182,10 @@
                   </p>
                   <p v-if="fut1.mutationResult">
                     <span class="font-weight-bold">MutationResult:</span>
-                    {{fut1.mutationResult[0].type+fut1.mutationResult[0].position+fut1.mutationResult[0].changeFrom+'>'+fut1.mutationResult[0].changeTo}}
+                    <template v-for="(i,index) in fut1.mutationResult" >
+                    {{i.type+i.position+i.changeFrom+ (i.type=='change'?'>':'')+i.changeTo}}
+                    {{fut1.mutationResult.length-1>index?',':''}}
+                    </template>
                   </p>
                   <p v-if="fut1.mutationRefMatch">
                     <span class="font-weight-bold">MutationMatch:</span>
@@ -194,23 +197,26 @@
                 <v-card-text v-if="selectedMethods.includes(methods[1])">
                   <p>
                     <span class="font-weight-bold">Method:</span>
-                    {{methods[1]}}
+                    {{methods[1]?methods[1]:""}}
                   </p>
                   <p>
                     <span class="font-weight-bold">Start position:</span>
-                    {{data[1].lcsStartAt}}
+                    {{fut2.lcsStartAt}}
                   </p>
                   <p>
                     <span class="font-weight-bold">End position:</span>
-                    {{data[1].lcsEndAt}}
+                    {{fut2.lcsEndAt}}
                   </p>
-                  <p v-if="data[1].mutationResult">
+                  <p v-if="fut2.mutationResult">
                     <span class="font-weight-bold">MutationResult:</span>
-                    {{data[1].mutationResult[0].type+data[1].mutationResult[0].position+data[1].mutationResult[0].changeFrom+'>'+data[1].mutationResult[0].changeTo}}
+                    <template v-for="(i,index) in fut2.mutationResult" >
+                    {{i.type+i.position+i.changeFrom+ (i.type=='change'?'>':'')+i.changeTo}}
+                    {{fut2.mutationResult.length-1>index?',':''}}
+                    </template>
                   </p>
-                  <p v-if="data[1].mutationRefMatch">
+                  <p v-if="fut2.mutationRefMatch">
                     <span class="font-weight-bold">MutationMatch:</span>
-                    AlleleName {{data[1].mutationRefMatch.alleleName}}
+                    AlleleName {{fut2.mutationRefMatch.alleleName}}
                   </p>
                   <v-divider />
                 </v-card-text>
